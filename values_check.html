@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Values Check</title>
+<style>
+  :root{
+    --paper:#F1EEE6;
+    --ink:#23211D;
+    --ink-soft:#5B5747;
+    --line:#CFC7B3;
+    --accent:#A9762C;
+    --accent-soft:#EADFC7;
+    --card:#FBF9F4;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .app{
+    width:100%;
+    max-width:640px;
+  }
+  .kicker{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  h1{
+    font-size:32px;
+    line-height:1.15;
+    margin:0 0 14px;
+    font-weight:400;
+  }
+  p{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:15.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .rule{
+    border:0;
+    border-top:1px solid var(--line);
+    margin:20px 0;
+  }
+  button{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    cursor:pointer;
+  }
+  .start-btn{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:14px 26px;
+    font-size:15px;
+    border-radius:2px;
+    margin-top:6px;
+  }
+  .start-btn:hover{ background:var(--accent); }
+
+  .progress-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .progress-track{
+    height:2px;
+    background:var(--line);
+    margin-bottom:36px;
+    position:relative;
+  }
+  .progress-fill{
+    height:2px;
+    background:var(--accent);
+    transition:width .3s ease;
+  }
+  .topic-tag{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:12.5px;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .question-text{
+    font-size:26px;
+    line-height:1.35;
+    margin:0 0 32px;
+    font-weight:400;
+  }
+  .answers{
+    display:flex;
+    gap:14px;
+  }
+  .answer-btn{
+    flex:1;
+    background:var(--card);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:18px 10px;
+    font-size:16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    border-radius:2px;
+  }
+  .answer-btn:hover{
+    border-color:var(--ink);
+    background:var(--accent-soft);
+  }
+  .skip-row{
+    text-align:center;
+    margin-top:18px;
+  }
+  .skip-btn{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    text-decoration:underline;
+  }
+  .back-row{
+    margin-top:10px;
+  }
+  .back-btn{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  .spectrum{
+    margin:28px 0 10px;
+  }
+  .spectrum-labels{
+    display:flex;
+    justify-content:space-between;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .spectrum-track{
+    position:relative;
+    height:8px;
+    background:var(--line);
+    border-radius:4px;
+  }
+  .spectrum-marker{
+    position:absolute;
+    top:-6px;
+    width:20px;
+    height:20px;
+    background:var(--ink);
+    border-radius:50%;
+    transform:translateX(-50%);
+    border:3px solid var(--paper);
+  }
+  .result-headline{
+    font-size:28px;
+    margin:22px 0 8px;
+  }
+  .counts{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:24px;
+  }
+  .breakdown-item{
+    padding:14px 0;
+    border-top:1px solid var(--line);
+  }
+  .breakdown-item:last-child{
+    border-bottom:1px solid var(--line);
+  }
+  .breakdown-topic{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:12.5px;
+    color:var(--accent);
+    margin-bottom:4px;
+  }
+  .breakdown-text{
+    font-size:16px;
+    margin-bottom:6px;
+  }
+  .breakdown-meta{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .breakdown-meta b{ color:var(--ink); }
+  .breakdown-meta a{ color:var(--accent); text-decoration:underline; }
+  .toggle-details{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    background:none;
+    border:none;
+    padding:0;
+    margin-top:24px;
+  }
+  .disclaimer{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:16px;
+    margin-top:26px;
+  }
+  .restart-btn{
+    background:none;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    padding:10px 20px;
+    font-size:14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    margin-top:24px;
+    border-radius:2px;
+  }
+  .hidden{ display:none; }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// Each question is drawn from an everyday version of a real, recorded piece of federal
+// legislation. "trueAligns" is which party's recorded floor votes matched a TRUE answer,
+// based on how that party's members actually voted, not campaign rhetoric.
+const QUESTIONS = [
+  {
+    topic: "School meals",
+    text: "Every kid at school should get a free meal regardless of their family's income, not just kids from low-income households.",
+    trueAligns: "D",
+    source: "The Healthy, Hunger-Free Kids Act (2010) expanded free school meals and passed the House on a near party-line Democratic vote (all but 17 Republicans voted no; all but 4 Democrats voted yes). Democrats have since pushed to make free meals universal rather than income-based.",
+    url: "https://www.congress.gov/search?q=%22Healthy%2C+Hunger-Free+Kids+Act%22"
+  },
+  {
+    topic: "Healthcare",
+    text: "Health insurance rules should be set by each state, not by the federal government.",
+    trueAligns: "R",
+    source: "The American Health Care Act (H.R.1628, 2017) would have let states waive federal minimum coverage requirements, like guaranteed essential health benefits and community rating. It passed the House 217-213 on a near party-line Republican vote; every Democrat voted no.",
+    url: "https://www.congress.gov/bill/115th-congress/house-bill/1628"
+  },
+  {
+    topic: "Border security",
+    text: "The government should keep building physical barriers along the border, even if that means turning away more people who show up asking for asylum.",
+    trueAligns: "R",
+    source: "The Secure the Border Act (H.R.2, 2023) funded wall construction and restricted asylum eligibility in the same bill. It passed the House 219-213, with every Democrat voting no and all but two Republicans voting yes.",
+    url: "https://www.congress.gov/bill/118th-congress/house-bill/2"
+  },
+  {
+    topic: "Wages",
+    text: "What counts as a fair minimum wage should be decided state by state, not set as one number in Washington for the whole country.",
+    trueAligns: "R",
+    source: "The Raise the Wage Act (H.R.582, 2019), setting one national $15/hour minimum wage, passed the House 231-199. All but 3 Republicans voted no, often citing regional cost-of-living differences.",
+    url: "https://www.congress.gov/bill/116th-congress/house-bill/582"
+  },
+  {
+    topic: "Climate",
+    text: "Summers are getting hotter and disasters are getting more frequent, and there's more the government should be doing about it.",
+    trueAligns: "D",
+    source: "The Inflation Reduction Act (H.R.5376, 2022), the largest federal climate investment in US history, passed with zero Republican votes in either chamber.",
+    url: "https://www.congress.gov/bill/117th-congress/house-bill/5376"
+  },
+  {
+    topic: "Energy",
+    text: "When it comes to energy policy, the government should be prioritizing electric vehicle affordability over expanding oil and gas drilling.",
+    trueAligns: "D",
+    source: "The EV tax credits in the Inflation Reduction Act passed with zero Republican votes. Republicans have instead prioritized expanding domestic oil and gas production, like the Lower Energy Costs Act (H.R.1, 2023), which passed the House on a near party-line Republican vote.",
+    url: "https://www.congress.gov/bill/118th-congress/house-bill/1"
+  },
+  {
+    topic: "Gun sales",
+    text: "If you're legally allowed to carry a gun in your home state, you shouldn't need a new permit just because you drive into a different state.",
+    trueAligns: "R",
+    source: "The Concealed Carry Reciprocity Act (H.R.38, 2017), letting permit holders carry across state lines without a new state-issued permit, passed the House 231-198, almost entirely on Republican votes.",
+    url: "https://www.congress.gov/bill/115th-congress/house-bill/38"
+  },
+  {
+    topic: "Union dues",
+    text: "Workers shouldn't be required to join a union or pay dues just to keep a job.",
+    trueAligns: "R",
+    source: "The National Right to Work Act has been introduced repeatedly by Republican members (most recently Rep. Joe Wilson and Sen. Rand Paul) and has never received a floor vote. Right-to-work laws that exist today were passed almost exclusively by Republican-controlled state legislatures.",
+    url: "https://www.congress.gov/bill/119th-congress/house-bill/1232"
+  },
+  {
+    topic: "Dreamers",
+    text: "If someone was brought to the US as a small child and has lived here their whole life, they shouldn't be deported for not having legal status they had no control over as a kid.",
+    trueAligns: "D",
+    source: "The American Dream and Promise Act (H.R.6, 2019), providing a path to legal status for people brought to the US as children, passed the House 237-187, mostly along party lines with Democratic support. It has never gotten a Senate floor vote.",
+    url: "https://www.congress.gov/bill/116th-congress/house-bill/6"
+  },
+  {
+    topic: "School choice",
+    text: "Parents should be able to direct public education dollars to the school that fits their kid best, even a private or charter school.",
+    trueAligns: "R",
+    source: "The DC Opportunity Scholarship Program (SOAR Act, H.R.471, 2011), a federal school voucher program, passed the House 225-195. All but 9 Republicans voted yes; all but 1 Democrat voted no.",
+    url: "https://www.congress.gov/bill/112th-congress/house-bill/471"
+  },
+  {
+    topic: "Taxes on wealth",
+    text: "A factory worker and the CEO of that factory shouldn't end up paying close to the same tax rate on their income.",
+    trueAligns: "D",
+    source: "The 2017 Tax Cuts and Jobs Act (H.R.1), which cut the corporate tax rate and top individual rates, passed with zero Democratic votes in either chamber. Democrats have since proposed raising rates on corporations and top earners.",
+    url: "https://www.congress.gov/bill/115th-congress/house-bill/1"
+  },
+  {
+    topic: "Small business taxes",
+    text: "Small business owners should get to keep more of what they earn instead of sending a bigger cut to the IRS.",
+    trueAligns: "R",
+    source: "The same 2017 Tax Cuts and Jobs Act (H.R.1) also lowered rates on pass-through small-business income, and passed with only Republican votes in both chambers.",
+    url: "https://www.congress.gov/bill/115th-congress/house-bill/1"
+  },
+  {
+    topic: "Family leave",
+    text: "New parents should get some paid time off, guaranteed by law, to care for a newborn.",
+    trueAligns: "D",
+    source: "The FAMILY Act, a federal paid family and medical leave proposal, has been reintroduced every Congress since 2013 by Democratic sponsors (Sen. Gillibrand, Rep. DeLauro) and has never received a floor vote in either chamber.",
+    url: "https://www.congress.gov/search?q=%22FAMILY+Act%22+paid+leave"
+  },
+  {
+    topic: "Federal budget",
+    text: "The federal government should be required to balance its budget instead of consistently spending more than it takes in.",
+    trueAligns: "R",
+    source: "A Balanced Budget Amendment to the Constitution has been reintroduced repeatedly, almost always by Republican members, and has never reached the two-thirds threshold needed to pass.",
+    url: "https://www.congress.gov/search?q=%22Balanced+Budget+Amendment%22"
+  },
+  {
+    topic: "Marriage rights",
+    text: "The government shouldn't be able to stop two people from getting married just because they're the same sex.",
+    trueAligns: "D",
+    source: "The Respect for Marriage Act (H.R.8404, 2022), protecting same-sex marriage recognition, passed with near-unanimous Democratic support. Most House Republicans (169 of them) and most Senate Republicans voted no.",
+    url: "https://www.congress.gov/bill/117th-congress/house-bill/8404"
+  },
+  {
+    topic: "Regulation",
+    text: "If you started a small business, the government paperwork and rules you'd have to follow are more of a burden than a protection.",
+    trueAligns: "R",
+    source: "The REINS Act, which would require Congress to approve major federal regulations before they take effect, has passed the House multiple times almost entirely on Republican votes and has never passed the Senate.",
+    url: "https://www.congress.gov/search?q=%22REINS+Act%22"
+  },
+  {
+    topic: "Union organizing",
+    text: "Workers should have an easier time forming a union at their workplace, without their employer being able to pressure them out of it.",
+    trueAligns: "D",
+    source: "The PRO Act (H.R.842, 2021), which penalizes employers for interfering with union organizing efforts, passed the House 225-206, almost entirely along party lines with Democratic support.",
+    url: "https://www.congress.gov/bill/117th-congress/house-bill/842"
+  },
+  {
+    topic: "Voter ID",
+    text: "Voters should have to show a photo ID before casting a ballot.",
+    trueAligns: "R",
+    source: "The SAVE Act (H.R.8281, 2024), requiring documentary proof of citizenship to register to vote, passed the House 221-198, almost entirely along party lines with Republican support. A follow-up version (H.R.22) passed the House again in 2025.",
+    url: "https://www.congress.gov/bill/118th-congress/house-bill/8281"
+  },
+  {
+    topic: "Abortion",
+    text: "The decision to have an abortion should be between a woman and her doctor, without the government stepping in during early pregnancy.",
+    trueAligns: "D",
+    source: "The Women's Health Protection Act (H.R.3755, 2021), which would have barred most state abortion restrictions, passed the House 218-211, with almost every Democrat voting yes and almost every Republican voting no.",
+    url: "https://www.congress.gov/bill/117th-congress/house-bill/3755"
+  },
+  {
+    topic: "Drug policy",
+    text: "If you get caught with marijuana for personal use, you shouldn't end up with a lifelong criminal record for it.",
+    trueAligns: "D",
+    source: "The MORE Act (H.R.3617, 2022), decriminalizing marijuana at the federal level, passed the House 220-204. Only 3 Republicans voted yes; only 2 Democrats voted no.",
+    url: "https://www.congress.gov/bill/117th-congress/house-bill/3617"
+  },
+  {
+    topic: "Defense spending",
+    text: "The military should get whatever funding it needs to stay strong, even if the budget keeps growing year over year.",
+    trueAligns: "R",
+    source: "In 2020, an amendment to cut the Pentagon budget by 10% failed 324-93. Republicans voted against the cut almost unanimously, effectively backing continued budget growth; the yes votes came almost entirely from Democrats.",
+    url: "https://www.commondreams.org/news/2020/07/21/fight-isnt-over-say-anti-war-groups-139-house-democrats-vote-gop-reject-10-pentagon"
+  }
+];
+
+let state = { screen: "intro", index: 0, answers: [] };
+
+function render(){
+  const app = document.getElementById("app");
+  if(state.screen === "intro") app.innerHTML = renderIntro();
+  else if(state.screen === "quiz") app.innerHTML = renderQuiz();
+  else app.innerHTML = renderResults();
+}
+
+function renderIntro(){
+  return `
+    <div class="kicker">A VALUES CHECK, NOT A CANDIDATE QUIZ</div>
+    <h1>What if you could vote based on your values, not your party affiliation?</h1>
+    <p>This isn't about candidates, ads, or debate soundbites. You'll answer ${QUESTIONS.length} true/false questions about everyday things — not policy jargon. Each one is tied to a real bill that came to an actual vote in Congress.</p>
+    <p>At the end, you'll see how your answers line up with how Democrats and Republicans have actually voted, not what they say on TV.</p>
+    <p style="font-size:13.5px; color:var(--ink-soft);">Built around the U.S. two-party system and U.S. federal legislation. Not applicable to other countries.</p>
+    <hr class="rule">
+    <button class="start-btn" onclick="startQuiz()">Start (2 minutes)</button>
+  `;
+}
+
+function renderQuiz(){
+  const q = QUESTIONS[state.index];
+  const pct = Math.round((state.index / QUESTIONS.length) * 100);
+  return `
+    <div class="progress-row">
+      <span>Question ${state.index + 1} of ${QUESTIONS.length}</span>
+      <span>${pct}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="topic-tag">${q.topic.toUpperCase()}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="answers">
+      <button class="answer-btn" onclick="answer(true)">True</button>
+      <button class="answer-btn" onclick="answer(false)">False</button>
+    </div>
+    <div class="skip-row">
+      <button class="skip-btn" onclick="answer(null)">Not sure / skip</button>
+    </div>
+    ${state.index > 0 ? `<div class="back-row"><button class="back-btn" onclick="goBack()">&larr; back</button></div>` : ""}
+  `;
+}
+
+function startQuiz(){
+  state = { screen: "quiz", index: 0, answers: [] };
+  render();
+}
+
+function answer(val){
+  state.answers[state.index] = val;
+  if(state.index < QUESTIONS.length - 1){
+    state.index++;
+  } else {
+    state.screen = "results";
+  }
+  render();
+}
+
+function goBack(){
+  state.index--;
+  render();
+}
+
+function computeResults(){
+  let d = 0, r = 0, skipped = 0, answered = 0;
+  const details = [];
+  QUESTIONS.forEach((q, i) => {
+    const a = state.answers[i];
+    if(a === null || a === undefined){
+      skipped++;
+      details.push({ q, userAnswer: "Skipped", alignedWith: null });
+      return;
+    }
+    answered++;
+    const trueParty = q.trueAligns;
+    const falseParty = trueParty === "D" ? "R" : "D";
+    const alignedWith = a ? trueParty : falseParty;
+    if(alignedWith === "D") d++; else r++;
+    details.push({ q, userAnswer: a ? "True" : "False", alignedWith });
+  });
+  return { d, r, skipped, answered, details };
+}
+
+function renderResults(){
+  const { d, r, skipped, answered, details } = computeResults();
+  const totalQ = QUESTIONS.length;
+  const dPct = Math.round((d / totalQ) * 100);
+  const rPct = Math.round((r / totalQ) * 100);
+  const skipPct = 100 - dPct - rPct;
+
+  const leanLabel = answered === 0
+    ? "You didn't answer any questions, so there's nothing to compare against either party's record."
+    : dPct === rPct
+      ? `You're evenly split, ${dPct}% Democratic-aligned to ${rPct}% Republican-aligned${skipped ? `, with ${skipPct}% no stated opinion` : ""}.`
+      : dPct > rPct
+        ? `Based on the ${answered} question${answered === 1 ? "" : "s"} you answered, your position${answered === 1 ? "s" : ""} align${answered === 1 ? "s" : ""} more with the Democratic Party's recorded votes, ${dPct}% to ${rPct}%${skipped ? `, with ${skipPct}% no stated opinion` : ""}.`
+        : `Based on the ${answered} question${answered === 1 ? "" : "s"} you answered, your position${answered === 1 ? "s" : ""} align${answered === 1 ? "s" : ""} more with the Republican Party's recorded votes, ${rPct}% to ${dPct}%${skipped ? `, with ${skipPct}% no stated opinion` : ""}.`;
+
+  // Three-segment bar, left to right: Republican, no opinion, Democratic
+  const rSegWidth = rPct;
+  const skipSegWidth = skipPct;
+  const dSegWidth = dPct;
+
+  const detailRows = details.map(d => {
+    if(d.userAnswer === "Skipped"){
+      return `
+        <div class="breakdown-item">
+          <div class="breakdown-topic">${d.q.topic.toUpperCase()}</div>
+          <div class="breakdown-text">${d.q.text}</div>
+          <div class="breakdown-meta">Skipped &mdash; counted as no stated opinion. <a href="${d.q.url}" target="_blank" rel="noopener">Read the bill &rarr;</a></div>
+        </div>`;
+    }
+    const partyName = d.alignedWith === "D" ? "Democratic" : "Republican";
+    return `
+      <div class="breakdown-item">
+        <div class="breakdown-topic">${d.q.topic.toUpperCase()}</div>
+        <div class="breakdown-text">${d.q.text}</div>
+        <div class="breakdown-meta">You said <b>${d.userAnswer}</b> — matches the <b>${partyName}</b> Party's recorded votes. <br>${d.q.source} <a href="${d.q.url}" target="_blank" rel="noopener">Read the bill &rarr;</a></div>
+      </div>`;
+  }).join("");
+
+  return `
+    <div class="kicker">YOUR RESULT</div>
+    <h1 class="result-headline">${leanLabel}</h1>
+    <div class="counts">${answered} of ${totalQ} questions answered${skipped ? ` &middot; ${skipped} skipped` : ""}</div>
+
+    <div class="spectrum">
+      <div class="spectrum-labels">
+        <span>Republican ${rPct}%</span>
+        ${skipped ? `<span>No opinion ${skipPct}%</span>` : ""}
+        <span>Democratic ${dPct}%</span>
+      </div>
+      <div class="spectrum-track" style="display:flex; overflow:hidden; border-radius:4px;">
+        <div style="width:${rSegWidth}%; background:var(--ink-soft); height:8px;"></div>
+        <div style="width:${skipSegWidth}%; background:var(--line); height:8px;"></div>
+        <div style="width:${dSegWidth}%; background:var(--accent); height:8px;"></div>
+      </div>
+    </div>
+
+    <button class="toggle-details" onclick="toggleDetails()">See how each answer mapped &darr;</button>
+    <div id="details" class="hidden">
+      ${detailRows}
+    </div>
+
+    <div class="disclaimer">
+      This maps your answers to how each party's members have actually voted on real, named bills, not what candidates say in speeches or ads. It's a simplified model of ${totalQ} issues out of thousands of votes Congress takes, and both parties contain members who break from their party's usual pattern. Use it as a starting point for your own research, not a final verdict.
+    </div>
+
+    <button class="restart-btn" onclick="startQuiz()">Take it again</button>
+  `;
+}
+
+function toggleDetails(){
+  const el = document.getElementById("details");
+  el.classList.toggle("hidden");
+}
+
+render();
+</script>
+</body>
+</html>
